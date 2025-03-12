@@ -12,6 +12,8 @@ df = pd.read_csv(
 df["DateTime"] = pd.to_datetime(
     df["DateTime"], dayfirst=True
 )  # สร้างคอลัมน์วันที่ในรูปแบบที่ pandas เข้าใจ
+print(f"Dataframe: \n{df}")
+
 
 # สร้างคอลัมน์เพิ่มเติมสำหรับการวิเคราะห์
 df["Year"] = df["DateTime"].dt.year  # แยกปีจาก DateTime
@@ -73,34 +75,7 @@ plt.tight_layout()
 plt.savefig("pm25_yearly_monthly_heatmap.png", dpi=300)
 plt.show()  # แสดงกราฟ
 
-# ---------- 2. สร้าง Heatmap แสดงค่าเฉลี่ย PM2.5 ตามชั่วโมงและวันในสัปดาห์ ----------
-# สร้าง pivot table โดยให้แกน x เป็นวันในสัปดาห์ แกน y เป็นชั่วโมง และค่าคือค่าเฉลี่ย PM2.5
-hourly_dow = df.pivot_table(
-    index="Hour", columns="DayOfWeek", values="PM2.5", aggfunc="mean"
-)
-
-plt.figure(figsize=(12, 8))
-ax = sns.heatmap(
-    hourly_dow,
-    cmap="YlOrRd",
-    annot=True,
-    fmt=".1f",
-    linewidths=0.5,
-    cbar_kws={"label": "PM2.5 (µg/m³)"},
-)
-
-plt.title("Average PM2.5 by Hour of Day and Day of Week", fontsize=14)
-plt.xlabel("Day of Week", fontsize=12)
-plt.ylabel("Hour of Day", fontsize=12)
-
-# เปลี่ยนป้ายกำกับจากตัวเลขเป็นชื่อวัน
-ax.set_xticklabels(days)
-
-plt.tight_layout()
-plt.savefig("pm25_hourly_weekly_heatmap.png", dpi=300)
-plt.show()
-
-# ---------- 3. สร้าง Heatmap แสดงความสัมพันธ์ระหว่างความเร็วลมและความชื้นต่อ PM2.5 ----------
+# ---------- 2. สร้าง Heatmap แสดงความสัมพันธ์ระหว่างความเร็วลมและความชื้นต่อ PM2.5 ----------
 # แบ่งช่วง PM2.5 เป็นกลุ่มตามระดับคุณภาพอากาศ
 bins = [0, 25, 50, 100, np.inf]  # กำหนดช่วงของ PM2.5
 labels = [
